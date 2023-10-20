@@ -4,8 +4,6 @@
     start/0,
     client/0,
     opts/0,
-    opts_emqx/0,
-    producer/2,
     callback/1
 ]).
 
@@ -35,27 +33,8 @@ opts() ->
         %% }
     }.
 
-opts_emqx() ->
-    #{
-        url => "http://127.0.0.1:26570",
-        rpc_options => #{
-            pool_size => 5
-        }
-    }.
-
-producer(Producer, Stream) ->
-    Client = client(),
-    ProducerOptions = [
-        {pool_size, 4},
-        {stream, Stream},
-        {callback, {producer_example, callback}},
-        {max_records, 1000},
-        {interval, 1000}
-    ],
-    ok = hstreamdb:start_producer(Client, Producer, ProducerOptions).
-
 start() ->
-    Stream = "demo_" ++ integer_to_list(erlang:unique_integer([positive])),
+    Stream = "demo_" ++ integer_to_list(erlang:system_time(millisecond)),
 
     _ = application:ensure_all_started(hstreamdb_erl),
 
